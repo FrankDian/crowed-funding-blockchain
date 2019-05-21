@@ -1,0 +1,21 @@
+
+
+
+
+
+solc [https://github.com/ethereum/solc-js]
+
+solc 编译.solw文件 生成一个json (后面部署 测试 等需要的数据)
+    1.bytecode -- 部署合约用的数据
+    2.interface -- 测试使用
+
+1.每次compile清空文件 重新生成
+2.报错信息打印
+3.最好能监听,自动compile
+    1.使用onchange模块
+
+
+
+
+
+
