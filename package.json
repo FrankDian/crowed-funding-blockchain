@@ -3,15 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "onchange": "^6.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "rimraf": "^2.6.3",
+    "solc": "^0.4.24"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "precompile": "rimraf src/compiled/*",
+    "compile": "node scripts/compile.js",
+    "precompile:w":"npm run compile",
+    "compile:w":"onchange 'contracts/*.sol' -- npm run compile"
   },
   "eslintConfig": {
     "extends": "react-app"
