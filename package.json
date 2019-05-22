@@ -3,12 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "onchange": "^6.0.0",
+    "antd": "^3.11.2",
+    "babel-plugin-import": "^1.11.0",
+    "bignumber.js": "^8.0.1",
+    "ganache-cli": "^6.2.3",
+    "ipfs-api": "^26.1.2",
+    "mocha": "^6.1.4",
+    "onchange": "^5.2.0",
     "react": "^16.8.6",
+    "react-app-rewired": "^1.6.2",
     "react-dom": "^16.8.6",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "3.0.1",
     "rimraf": "^2.6.3",
-    "solc": "^0.4.24"
+    "solc": "^0.4.24",
+    "truffle-hdwallet-provider": "0.0.3",
+    "web3": "^1.0.0-beta.34"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -17,8 +27,11 @@
     "eject": "react-scripts eject",
     "precompile": "rimraf src/compiled/*",
     "compile": "node scripts/compile.js",
-    "precompile:w":"npm run compile",
-    "compile:w":"onchange 'contracts/*.sol' -- npm run compile"
+    "precompile:w": "npm run compile",
+    "compile:w": "onchange 'contracts/*.sol' -- npm run compile",
+    "test:w": "mocha --watch --timeout 2000",
+    "rebuild": "npm run compile && mocha",
+    "rebuild:w": "onchange 'contracts/*.sol' 'test/*.js' -- npm run rebuild"
   },
   "eslintConfig": {
     "extends": "react-app"

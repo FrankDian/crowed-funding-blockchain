@@ -14,8 +14,31 @@ solc 编译.solw文件 生成一个json (后面部署 测试 等需要的数据)
 3.最好能监听,自动compile
     1.使用onchange模块
 
+1.课程列表
+    1.每一个课程 是一个单独的合约
+    2.使用CourseList来控制课程的合约
 
+    测试 使用mocha
+    断言使用node自己的assert
+    本地部署环境 ganache-cli 测试的时候开虚拟环境
 
+    课程:
+        owner 课程创建者
+        name 课程名
+        content 课程简介
+        target 目标募集款数量 ETH
+        fundingPrice 众筹价格
+        price 上线价格
+        img 课程头图
+        video 视屏
+        count 多少人支持
+        isOnline 是否上线
+
+payable 是否可付款
+
+1. 如果收到的钱大于目标 上线了
+2. 上线前的钱 ceo不分
+3. 上线之后卖的钱 ceo分1成
 
 
 

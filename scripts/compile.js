@@ -11,6 +11,7 @@ const source = fs.readFileSync(contractPath,'utf-8')
 
 //Compile the content
 const ret = solc.compile(source)
+// console.log(ret)
 
 if(Array.isArray(ret.errors) && ret.errors.length > 0) {
   // Error happens
