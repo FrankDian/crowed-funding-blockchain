@@ -15,7 +15,6 @@ contract CourseList {
 	function getCourse() public view returns(address[]){
 		return courses;
 	}
-	
 	function removeCourse(uint _index) public{
 		// Only CEO can delete
 		require(msg.sender == ceo);
