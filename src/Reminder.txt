@@ -1,0 +1,68 @@
+
+
+
+
+
+solc [https://github.com/ethereum/solc-js]
+
+solc 编译.solw文件 生成一个json (后面部署 测试 等需要的数据)
+    1.bytecode -- 部署合约用的数据
+    2.interface -- 测试使用
+
+1.每次compile清空文件 重新生成
+2.报错信息打印
+3.最好能监听,自动compile
+    1.使用onchange模块
+
+1.课程列表
+    1.每一个课程 是一个单独的合约
+    2.使用CourseList来控制课程的合约
+
+    测试 使用mocha
+    断言使用node自己的assert
+    本地部署环境 ganache-cli 测试的时候开虚拟环境
+
+    课程:
+        owner 课程创建者
+        name 课程名
+        content 课程简介
+        target 目标募集款数量 ETH
+        fundingPrice 众筹价格
+        price 上线价格
+        img 课程头图
+        video 视屏
+        count 多少人支持
+        isOnline 是否上线
+
+payable 是否可付款
+
+1. 如果收到的钱大于目标 上线了
+2. 上线前的钱 ceo不分
+3. 上线之后卖的钱 ceo分1成
+
+wei finney szabo ether
+1 ether == 10^3 finney == 10^6 szabo == 10^18 wei
+
+## 部署
+
+助记词:crumble book pave file speak void call hood voice logic uniform donate
+
+主网:
+本地ganache 没有办法在公网访问
+
+ropsten 和主网一样的逻辑,只不过币不值钱
+
+2.部署
+
+3. infura.io 部署服务
+    1. 部署的地址:   https://ropsten.infura.io/v3/e67dd0589ed84a38a55d9f0f54cb4428
+    2. 账号:  0x24450f6C65fc81C1dD98Bc767ce4A1d775E3B7F8
+
+4.npm install web3@1.0.0-beta.34 truffle-hdwallet-provider@0.0.3 --save
+
+rebuild 测试+编译
+compile 编译
+deploy 部署到ropsten公网上
+start 打开应用
+
+
