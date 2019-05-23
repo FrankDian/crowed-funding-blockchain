@@ -7,8 +7,8 @@ contract CourseList {
 		ceo = msg.sender;
 	}
 //	Create course
-	function createCourse(string _name,string _content,uint _target,uint _fundingPrice,uint _price,string _img) public{
-		address newCourse = new Course(ceo, msg.sender, _name, _content, _target, _fundingPrice, _price, _img);
+	function createCourse(string _name,string _content,uint _target,uint _fundingPrice,uint _onlinePrice,string _img) public{
+		address newCourse = new Course(ceo, msg.sender, _name, _content, _target, _fundingPrice, _onlinePrice, _img);
 		courses.push(newCourse);
 	}
 //	Get all courses' address
@@ -41,21 +41,21 @@ contract Course {
 	string public content;
 	uint public target;
 	uint public fundingPrice;
-	uint public price;
+	uint public onlinePrice;
 	string public img;
 	string public video;
 	bool public isOnline;
 	uint public count;
 	// Info of users who buy this course
 	mapping(address=>uint) public users;
-	constructor(address _ceo, address _owner,string _name,string _content,uint _target,uint _fundingPrice,uint _price,string _img) public{
+	constructor(address _ceo, address _owner,string _name,string _content,uint _target,uint _fundingPrice,uint _onlinePrice,string _img) public{
 		ceo = _ceo;
 		owner = _owner;
 		name = _name;
 		content = _content;
 		target = _target;
 		fundingPrice = _fundingPrice;
-		price = _price;
+		onlinePrice = _onlinePrice;
 		img = _img;
 		video = '';
 		count = 0;
@@ -71,8 +71,8 @@ contract Course {
 		// 1. User didn't buy before
 		require(users[msg.sender] == 0);
 		if(isOnline){
-			// Online, must pay by online price
-			require(price == msg.value);
+			// Online, must pay by onlinePrice
+			require(onlinePrice == msg.value);
 		} else {
 			// Not online yet, pay by fundingPrice
 			require(fundingPrice == msg.value);
@@ -111,7 +111,7 @@ contract Course {
 			content,
 			target,
 			fundingPrice,
-			price,
+			onlinePrice,
 			img,
 			video,
 			count,
