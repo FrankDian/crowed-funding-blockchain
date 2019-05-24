@@ -76,3 +76,9 @@ deploy 部署到ropsten公网上
 start 打开应用
 
 
+余额:
+teacher1: 6.998774
+buyer1: 3 ==> 2.499937
+buyer2: 7 ==> 6.49
+CEO: 7.988747
+
