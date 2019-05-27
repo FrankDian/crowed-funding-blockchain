@@ -3,8 +3,6 @@ import { Switch, Row, Col, Badge, Button } from 'antd';
 import { Link } from 'react-router-dom'
 import { ipfsPrefix, web3, courseListContract, getCourseContract } from '../config'
 
-// Todo: 2019.5.23 删除页面未自动刷新
-
 class Course extends React.Component{
   constructor(props){
     super(props)
