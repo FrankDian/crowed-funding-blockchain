@@ -1,6 +1,8 @@
 import React from 'react'
-import { Form, Input, Row, Col, message, Button } from 'antd';
+import { Form, Badge, Input, Row, Col, message, Button, Comment, Modal } from 'antd';
 import { web3, saveJsonOnIpfs, courseListContract, readJsonFromIpfs } from '../config'
+
+// Todo: 增加直达底部的按钮
 
 class Qa extends React.Component{
   constructor(props){
@@ -9,7 +11,10 @@ class Qa extends React.Component{
       title:'',
       questions:[],
       content:'',
-      account:''
+      account:'',
+      ansIndex:0,
+      showModal:false,
+      answer:''
     }
     // this.handleChange = this.handleChange.bind(this)
     // this.handleSubmit = this.handleSubmit.bind(this)
@@ -64,9 +69,65 @@ class Qa extends React.Component{
         })
       }).on('error', console.error)
   }
+  showInfoModal(index) {
+    this.setState({
+      ansIndex: index,
+      showModal: true
+    })
+  }
+  handleAnsChange = (e) => {
+    this.setState({
+      answer: e.target.value
+    })
+  }
+  handleCancel = (e) => {
+    this.setState({
+      showModal:false,
+      answer:''
+    })
+  }
+  handleOk = async (e) => {
+    let item = this.state.questions[this.state.ansIndex]
+    item.answers.push({
+      text:this.state.answer
+    })
+    const hash = await saveJsonOnIpfs(item)
+    let hash1 = web3.utils.utf8ToHex(hash.slice(0,23))
+    let hash2 = web3.utils.utf8ToHex(hash.slice(23))
+    await courseListContract.methods.updateQa(this.state.ansIndex,hash1,hash2)
+      .send({
+        from:this.state.account,
+        gas:'5000000'
+      }).on('confirmation', (confirmationNumber, receipt)=>{
+        this.init()
+        this.setState({
+          showModal:false,
+          answer:''
+        })
+      }).on('error', console.error)
+  }
   render(){
+    
     return <Row style={{marginTop:"30px"}} justify='center' type='flex'>
       <Col span={20}>
+        {
+          this.state.questions.map((item, index) => {
+            return <Comment
+              key={index}
+              actions={[<span onClick={()=>this.showInfoModal(index)}>Reply</span>]}
+              author={item.title}
+              content={item.content}
+              avatar={<Badge count={index+1} />}
+            >
+              {item.answers.map((ans,index) => {
+                return <Comment
+                  key={index}
+                  content={ans.text}
+                />
+              })}
+            </Comment>
+          })
+        }
         <Form onSubmit={this.handleSubmit} style={{marginTop:'20px'}}>
           <Form.Item label='Title'>
             <Input value={this.state.title} name='title' onChange={this.handleChange} />
@@ -81,9 +142,17 @@ class Qa extends React.Component{
           <Form.Item>
             <Button htmlType='submit' type='primary'>Submit Question</Button>
           </Form.Item>
-        
         </Form>
+        <Modal
+          title='Reply'
+          visible={this.state.showModal}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <Input value={this.state.answer} onChange={this.handleAnsChange} />
+        </Modal>
       </Col>
+      
     </Row>
     
   }
