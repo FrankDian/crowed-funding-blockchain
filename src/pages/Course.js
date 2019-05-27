@@ -1,21 +1,24 @@
 import React from 'react'
-import { Form, Input, Row, Col, Badge, Button } from 'antd';
+import { Switch, Row, Col, Badge, Button } from 'antd';
 import { Link } from 'react-router-dom'
 import { ipfsPrefix, web3, courseListContract, getCourseContract } from '../config'
-import address from "../address";
 
 // Todo: 2019.5.23 删除页面未自动刷新
-
 
 class Course extends React.Component{
   constructor(props){
     super(props)
     this.state = {
       detailList:[],
+      showAll:true,
       addressList:[],
       account:'',
       isCeo:false
     }
+    this.onChangeSwitch = this.onChangeSwitch.bind(this)
+    this.init = this.init.bind(this)
+    this.removeCourse = this.removeCourse.bind(this)
+    
     this.init()
   }
   init = async ()=>{
@@ -40,22 +43,34 @@ class Course extends React.Component{
       account,
       isCeo
     })
-    // console.log(detailList)
   }
-  
   async removeCourse(index) {
     await courseListContract.methods.removeCourse(index)
       .send({
         from: this.state.account,
         gas:"5000000"
-    })
-    this.init()
+    }).on('confirmation', (confirmationNumber, receipt) => {
+        // This controls jump back to the index page
+        this.init()
+      }).on('error', console.error)
   }
+  async onChangeSwitch(v) {
+    this.setState({
+      showAll:v
+    })
+  }
+  
   render(){
     return <Row style={{marginTop:"30px"}} gutter={16}>
+      <Col span={20}>
+        <Switch onChange={this.onChangeSwitch} checkedChildren='All' unCheckedChildren='Online' defaultChecked />
+      </Col>
       {this.state.detailList.map((detail,index) =>{
         const address = this.state.addressList[index]
         let [name, content, target, fundingPrice, onlinePrice,img, video, count, isOnline, role] = Object.values(detail)
+        if(!this.state.showAll && !isOnline) {
+          return null
+        }
         target = web3.utils.fromWei(target.toString())
         fundingPrice = web3.utils.fromWei(fundingPrice.toString())
         onlinePrice = web3.utils.fromWei(onlinePrice.toString())
@@ -67,8 +82,8 @@ class Course extends React.Component{
               <span>
                 {
                   isOnline
-                    ? <Badge count="Already Online" style={{backgroundColor:"#52c41a"}}/>
-                    : <Badge count="Fund Raising"/>
+                    ? <Badge count="Online" style={{backgroundColor:"#52c41a"}}/>
+                    : <Badge count="Funding"/>
                 }
               </span>
             </p>
@@ -88,7 +103,7 @@ class Course extends React.Component{
                 }
               </p>
               <Button type='primary' block style={{marginBottom:'10px'}}>
-                <Link to={`/detail/${address}`}>查看详情</Link>
+                <Link to={`/detail/${address}`}>Detail</Link>
               </Button>
               {
                 this.state.isCeo ? <Button onClick={()=>this.removeCourse(index)} type='primary' block>Delete</Button> : null

@@ -3,10 +3,38 @@ pragma solidity ^0.4.24;
 contract CourseList {
 	address public ceo;
 	address [] public courses;
+	// 以太坊的bytes最长是32位  而ipfs的长度是46bytes  需要将地址分成两份来存储
+	bytes23[] public questions;
 	constructor() public {
 		ceo = msg.sender;
 	}
-//	Create course
+	function createQa(bytes23 _hash1, bytes23 _hash2) public {
+		questions.push(_hash1);
+		questions.push(_hash2);
+	}
+	function getQa() public view returns(bytes23[]) {
+		return questions;
+	}
+	function updateQa(uint _index, bytes23 _hash1, bytes23 _hash2) public{
+		questions[_index*2] = _hash1;
+		questions[_index*2+1] = _hash2;
+	}
+	function removeQa(uint _index) public {
+	// Only CEO can delete
+//	require(msg.sender == ceo);
+	// Delete by index
+//	require(_index<courses.length);
+	uint index = _index*2;
+	uint len = questions.length;
+	for(uint i = index;i<len-2;i=i+2){
+		questions[i] = questions[i+2];
+		questions[i+1] = questions[i+3];
+	}
+	delete questions[len-1];
+	delete questions[len-2];
+	questions.length = len-2;
+	}
+	
 	function createCourse(string _name,string _content,uint _target,uint _fundingPrice,uint _onlinePrice,string _img) public{
 		address newCourse = new Course(ceo, msg.sender, _name, _content, _target, _fundingPrice, _onlinePrice, _img);
 		courses.push(newCourse);

@@ -5,11 +5,10 @@ import {BrowserRouter as Router, Route } from "react-router-dom";
 import Create from './pages/Create'
 import Course from './pages/Course'
 import Detail from './pages/Detail'
+import Qa from './pages/Qa'
 
 
 const { Content, Footer } = Layout;
-
-const Qa = () => <span>Q&A</span>
 
 // Todo: 2019.5.23 制作标题图
 
@@ -28,7 +27,7 @@ class App extends Component {
             <Route path="/create" component={Create}/>
             <Route path="/detail/:address" component={Detail}/>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>©Bottom copyright</Footer>
+          <Footer style={{ textAlign: 'center' }}>©Build by FrankDian@3556294@hku.hk</Footer>
         </Layout>
       </Router>
     );

@@ -3,7 +3,6 @@ import { Form, Input, Row, Col, Button, Upload } from 'antd';
 import { Redirect } from 'react-router-dom'
 import { saveImageToIpfs, ipfsPrefix, web3, courseListContract } from '../config'
 
-// Todo: 2019.05.23 提交后没有自动跳转到首页
 // Todo: 2019.05.23 添加点击提交之后的遮罩层(loading)
 // Todo: 2019.05.23 课程结构图上传组件优化,改为照片墙形式
 
@@ -19,6 +18,9 @@ class Create extends React.Component{
       fundingPrice:'',
       onlinePrice:''
     }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleUpload = this.handleUpload.bind(this)
+    this.onChange = this.onChange.bind(this)
   }
   handleSubmit = async (e)=>{
     console.log(this.state)
@@ -35,12 +37,12 @@ class Create extends React.Component{
     await courseListContract.methods.createCourse(...arr)
       .send({
         from:account
-      })
-    // This controls jump back to the index page
-    console.log('toIndex 状态已经改变')
-    this.setState({
-      toIndex: true
-    })
+      }).on('confirmation', (confirmationNumber, receipt) => {
+        // This controls jump back to the index page
+        this.setState({
+          toIndex: true
+        })
+      }).on('error', console.error)
   }
   handleUpload = async (file)=> {
     const hash = await saveImageToIpfs(file)
@@ -58,7 +60,7 @@ class Create extends React.Component{
   render(){
     if(this.state.toIndex){
       console.log('执行重定向')
-      return <Redirect to='/'></Redirect>
+      return <Redirect to='/' />
     }
     return(
       <Row

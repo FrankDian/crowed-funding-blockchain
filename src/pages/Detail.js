@@ -1,8 +1,6 @@
 import React from 'react'
-import { Form, Input, Row, Col, Badge, Button } from 'antd';
-import { Link } from 'react-router-dom'
-import { ipfsPrefix, web3, courseListContract, getCourseContract } from '../config'
-import address from "../address";
+import { Form, Row, Col, Badge, Upload, Button } from 'antd'
+import { ipfsPrefix, web3, getCourseContract, saveImageToIpfs } from '../config'
 
 
 class Detail extends React.Component{
@@ -12,18 +10,18 @@ class Detail extends React.Component{
       address: this.props.match.params.address
     }
     this.buy = this.buy.bind(this)
+    this.init = this.init.bind(this)
+    this.handleUpload = this.handleUpload.bind(this)
     this.init()
   }
   async init(){
     const [account] = await web3.eth.getAccounts()
-    console.log(account)
     const contract = getCourseContract(this.state.address)
     const detail = await contract.methods.getDetail().call({from:account})
     let [name, content, target, fundingPrice, onlinePrice,img, video, count, isOnline, role] = Object.values(detail)
     target = web3.utils.fromWei(target.toString())
     fundingPrice = web3.utils.fromWei(fundingPrice.toString())
     onlinePrice = web3.utils.fromWei(onlinePrice.toString())
-    console.log(role.toString())
     this.setState({
       account,
       name,
@@ -39,7 +37,6 @@ class Detail extends React.Component{
     })
   }
   async buy(){
-    console.log(this.state.account)
     const contract = getCourseContract(this.state.address)
     let buyPrice = this.state.isOnline? this.state.onlinePrice: this.state.fundingPrice
     await contract.methods.buy()
@@ -47,8 +44,19 @@ class Detail extends React.Component{
         from: this.state.account,
         value: web3.utils.toWei(buyPrice),
         gas: '6000000'
-      })
-    this.init()
+      }).on('confirmation', (confirmationNumber, receipt)=>{
+        this.init()
+      }).on('error', console.error)
+  }
+  handleUpload = async (file) => {
+    const hash = await saveImageToIpfs(file)
+    const contract = getCourseContract(this.state.address)
+    await contract.methods.addVideo(hash).send({
+      from:this.state.account,
+      gas:'6000000'
+    }).on('confirmation', (confirmationNumber, receipt)=>{
+      this.init()
+    }).on('error', console.error)
   }
   
   render(){
@@ -83,13 +91,19 @@ class Detail extends React.Component{
           </Form.Item>
           <Form.Item {...formItemLayout} label='Status'>
             {
-              this.state.isOnline ? <Badge count='Finish Fund Raising' />
-                :<Badge count='Fund Raising...' />
+              this.state.isOnline ? <Badge count="Online" style={{backgroundColor:"#52c41a"}}/>
+                :<Badge count='Funding...' />
             }
           </Form.Item>
           <Form.Item {...formItemLayout} label='Identity'>
             {
-              this.state.role === '0' && 'Upload Video'
+              this.state.role === '0' &&
+              <Upload
+                beforeUpload={this.handleUpload}
+                showUploadList={false}
+              >
+                <Button type='primary'>Upload Video</Button>
+              </Upload>
             }
             {
               this.state.role === '1' && 'Already Bought'
@@ -99,7 +113,9 @@ class Detail extends React.Component{
             }
           </Form.Item>
           <Form.Item {...formItemLayout} label='Video Status'>
-            {this.state.video ? 'Play Video': 'Waiting for Upload'}
+            {this.state.video ? (
+              this.state.role === '2' ? "Uploaded" :<video controls width='300px' src={`${ipfsPrefix}${this.state.video}`} />
+            ): 'Waiting for Upload'}
           </Form.Item>
           <Form.Item {...formItemLayout} label='Buy'>
             {this.state.role ==='2' && (

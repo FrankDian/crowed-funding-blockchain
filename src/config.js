@@ -33,7 +33,7 @@ let courseListContract = new web3.eth.Contract(JSON.parse(CourseList.interface),
 // Get the contract from specific address
 let getCourseContract = (addr) => new web3.eth.Contract(JSON.parse(Course.interface),addr)
 
-// Save images
+// Save files
 function saveImageToIpfs(file){
   const hide = message.loading('Uploading...')
   return new Promise((resolve,reject) => {
@@ -48,6 +48,29 @@ function saveImageToIpfs(file){
     }
   })
 }
+function saveJsonOnIpfs(json){
+  return new Promise(async (resolve, reject) => {
+    const buffer = Buffer.from(JSON.stringify(json))
+    const ret = await ipfs.add(buffer)
+    console.log(ret)
+    resolve(ret[0].hash)
+  })
+}
+function readJsonFromIpfs(hash1,hash2){
+  return new Promise(async (resolve, reject) => {
+    const hash = web3.utils.hexToUtf8(hash1)+web3.utils.hexToUtf8(hash2)
+    const ret = await ipfs.cat(hash)
+    resolve(JSON.parse(ret))
+  })
+}
 
-
-export {ipfs, ipfsPrefix , saveImageToIpfs, web3, courseListContract, getCourseContract}
+export {
+  ipfs,
+  ipfsPrefix,
+  saveImageToIpfs,
+  web3,
+  saveJsonOnIpfs,
+  readJsonFromIpfs,
+  courseListContract,
+  getCourseContract
+}
