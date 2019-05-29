@@ -8,7 +8,9 @@ class HeadComp extends React.Component {
   render() {
     
     return (
-        <Header>
+        <Header
+          style={{ height: '85px'}}
+        >
           <div className="logo">
             <img src="/CrowedFundingLogo.png" alt=""/>
           </div>
@@ -16,7 +18,7 @@ class HeadComp extends React.Component {
             theme="dark"
             mode="horizontal"
             defaultSelectedKeys={[this.props.location.pathname]}
-            style={{ lineHeight: '64px' }}
+            style={{ lineHeight: '85px' }}
           >
             <Menu.Item key="/">
               <Link to="/">Courses</Link>

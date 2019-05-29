@@ -1,7 +1,7 @@
 Author: 1355253924@qq.com 
 ## Guidance
-
-In the project directory, you can run:
+1. Install MetaMask plugin at your browser
+2. In the project directory, you can run:
 
 ### `npm install`
 
@@ -17,4 +17,4 @@ deploy the smart-contract into ropsten network which provided by [infura](https:
 
 ### `npm start`
 
-now you can start the project(website) and it will open automatically at [http://localhost:3000/]( http://localhost:3000/)
+3. now you can start the project(website) and it will open automatically at [http://localhost:3000/]( http://localhost:3000/)
