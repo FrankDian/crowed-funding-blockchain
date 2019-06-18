@@ -1,4 +1,4 @@
-Author: 1355253924@qq.com 
+Author: u3556294@connect.hku.hk 
 ## Guidance
 1. Install MetaMask plugin at your browser
 2. In the project directory, you can run:

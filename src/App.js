@@ -10,8 +10,6 @@ import Qa from './pages/Qa'
 
 const { Content, Footer } = Layout;
 
-// Todo: 2019.5.23 制作标题图
-
 class App extends Component {
   render() {
     return (
@@ -27,7 +25,7 @@ class App extends Component {
             <Route path="/create" component={Create}/>
             <Route path="/detail/:address" component={Detail}/>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>©Build by FrankDian@3556294@hku.hk</Footer>
+          <Footer style={{ textAlign: 'center' }}>©Build by FrankDian u3556294@connect.hku.hk</Footer>
         </Layout>
       </Router>
     );
