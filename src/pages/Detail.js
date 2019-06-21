@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Row, Col, Badge, Upload, Button } from 'antd'
+import { Form, Row, Col, Badge, Upload, Button, Spin } from 'antd'
 import { ipfsPrefix, web3, getCourseContract, saveImageToIpfs } from '../config'
 
 
@@ -7,7 +7,8 @@ class Detail extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      address: this.props.match.params.address
+      address: this.props.match.params.address,
+      coverStatus: false,
     }
     this.buy = this.buy.bind(this)
     this.init = this.init.bind(this)
@@ -33,10 +34,14 @@ class Detail extends React.Component{
       role:role.toString(),
       target,
       fundingPrice,
-      onlinePrice
+      onlinePrice,
+      coverStatus:false
     })
   }
   async buy(){
+    this.setState({
+      coverStatus: true,
+    })
     const contract = getCourseContract(this.state.address)
     let buyPrice = this.state.isOnline? this.state.onlinePrice: this.state.fundingPrice
     await contract.methods.buy()
@@ -49,6 +54,9 @@ class Detail extends React.Component{
       }).on('error', console.error)
   }
   handleUpload = async (file) => {
+    this.setState({
+      coverStatus: true,
+    })
     const hash = await saveImageToIpfs(file)
     const contract = getCourseContract(this.state.address)
     await contract.methods.addVideo(hash).send({
@@ -68,7 +76,8 @@ class Detail extends React.Component{
         span:10
       }
     }
-    return <Row type='flex' justify='center' style={{marginTop:'30px'}}>
+    return <Spin spinning={this.state.coverStatus}>
+      <Row type='flex' justify='center' style={{marginTop:'30px'}}>
       <Col span={20}>
         <Form>
           <Form.Item {...formItemLayout} label='Course Name'>
@@ -134,6 +143,7 @@ class Detail extends React.Component{
         </Form>
       </Col>
     </Row>
+    </Spin>
   }
 }
 

@@ -52,7 +52,7 @@ function saveJsonOnIpfs(json){
   return new Promise(async (resolve, reject) => {
     const buffer = Buffer.from(JSON.stringify(json))
     const ret = await ipfs.add(buffer)
-    console.log(ret)
+    // console.log(ret)
     resolve(ret[0].hash)
   })
 }

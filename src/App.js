@@ -20,7 +20,7 @@ class App extends Component {
           <Header />
           <Content style={{ padding: '0 50px' }}>
             {/*匹配具体的路由*/}
-            <Route path="/" exact component={Course}/>
+            <Route path="/courses" exact component={Course}/>
             <Route path="/qa" component={Qa}/>
             <Route path="/create" component={Create}/>
             <Route path="/detail/:address" component={Detail}/>

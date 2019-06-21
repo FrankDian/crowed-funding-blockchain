@@ -1,8 +1,8 @@
 import React from 'react'
-import { Form, Badge, Input, Row, Col, message, Button, Comment, Modal } from 'antd';
-import { web3, saveJsonOnIpfs, courseListContract, readJsonFromIpfs } from '../config'
+import { Form, Avatar, Spin, Badge, Input, Row, Col, message, Button, Comment, Modal, Tooltip } from 'antd';
+import moment from 'moment'
 
-// Todo: 增加直达底部的按钮
+import { web3, saveJsonOnIpfs, courseListContract, readJsonFromIpfs } from '../config'
 
 class Qa extends React.Component{
   constructor(props){
@@ -14,7 +14,8 @@ class Qa extends React.Component{
       account:'',
       ansIndex:0,
       showModal:false,
-      answer:''
+      answer:'',
+      coverStatus: false,
     }
     // this.handleChange = this.handleChange.bind(this)
     // this.handleSubmit = this.handleSubmit.bind(this)
@@ -29,7 +30,7 @@ class Qa extends React.Component{
       ret.push(readJsonFromIpfs(qas[i],qas[i+1]))
     }
     const questions = await Promise.all(ret)
-    console.log(questions)
+    // console.log(questions)
     this.setState({
       account,
       questions
@@ -50,6 +51,9 @@ class Qa extends React.Component{
       answers:[]
     }
     const hide = message.loading('Submitting question',0)
+    this.setState({
+      coverStatus: true
+    })
     // 2. Store in JSON in IPFS
     const hash = await saveJsonOnIpfs(obj)
     // 3. ipfs hash 上链
@@ -65,7 +69,8 @@ class Qa extends React.Component{
         hide()
         this.setState({
           title:'',
-          content:''
+          content:'',
+          coverStatus: false,
         })
       }).on('error', console.error)
   }
@@ -88,8 +93,13 @@ class Qa extends React.Component{
   }
   handleOk = async (e) => {
     let item = this.state.questions[this.state.ansIndex]
+    // TODO: 这里在回答中可加入回答者名字
     item.answers.push({
-      text:this.state.answer
+      text:this.state.answer,
+    })
+    this.setState({
+      showModal:false,
+      coverStatus: true,
     })
     const hash = await saveJsonOnIpfs(item)
     let hash1 = web3.utils.utf8ToHex(hash.slice(0,23))
@@ -101,14 +111,15 @@ class Qa extends React.Component{
       }).on('confirmation', (confirmationNumber, receipt)=>{
         this.init()
         this.setState({
-          showModal:false,
-          answer:''
+          answer:'',
+          coverStatus: false,
         })
       }).on('error', console.error)
   }
   render(){
     
-    return <Row style={{marginTop:"30px"}} justify='center' type='flex'>
+    return <Spin spinning={this.state.coverStatus}>
+    <Row style={{marginTop:"30px"}} justify='center' type='flex'>
       <Col span={20}>
         {
           this.state.questions.map((item, index) => {
@@ -122,7 +133,19 @@ class Qa extends React.Component{
               {item.answers.map((ans,index) => {
                 return <Comment
                   key={index}
+                  author={<a>anonym</a>}
+                  avatar={
+                    <Avatar
+                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                      alt='anonym'
+                    />
+                  }
                   content={ans.text}
+                  datetime={
+                    <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+                      <span>{moment().fromNow()}</span>
+                    </Tooltip>
+                  }
                 />
               })}
             </Comment>
@@ -152,9 +175,8 @@ class Qa extends React.Component{
           <Input value={this.state.answer} onChange={this.handleAnsChange} />
         </Modal>
       </Col>
-      
     </Row>
-    
+    </Spin>
   }
 }
 

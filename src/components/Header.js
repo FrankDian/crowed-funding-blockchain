@@ -17,11 +17,13 @@ class HeadComp extends React.Component {
           <Menu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={[this.props.location.pathname]}
+            // defaultSelectedKeys={[this.props.location.pathname]}
+            defaultSelectedKeys={['/courses']}
+            selectedKeys={[this.props.location.pathname]}
             style={{ lineHeight: '85px' }}
           >
-            <Menu.Item key="/">
-              <Link to="/">Courses</Link>
+            <Menu.Item key="/courses">
+              <Link to="/courses">Courses</Link>
             </Menu.Item>
             <Menu.Item key="/create">
               <Link to="/create">Create</Link>
