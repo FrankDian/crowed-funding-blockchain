@@ -94,7 +94,7 @@ contract Course {
 		require(isOnline==true);
 		video = _video;
 	}
-	// 众筹或者购买
+	// Funding or online buy
 	function buy() public payable{
 		// 1. User didn't buy before
 		require(users[msg.sender] == 0);
